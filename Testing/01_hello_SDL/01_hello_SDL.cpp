@@ -7,7 +7,7 @@ and may not be redistributed without written permission.*/
 
 //Screen dimension constants
 const int SCREEN_WIDTH = 640;
-const int SCREEN_HEIGHT = 480;
+const int SCREEN_HEIGHT = 640;
 
 const int pointLocationx = SCREEN_WIDTH - (SCREEN_WIDTH * 0.2);
 const int pointLocationy = SCREEN_HEIGHT / 2;
@@ -54,14 +54,51 @@ void init_grid_vals(SDL_Renderer *s)
 			pos_x += cell_x;
 			grid[i][j].x = pos_x;
 			grid[i][j].y = pos_y;
-			SDL_RenderDrawLine(s , grid[i][j].x, grid[i][j].y, grid[i][j + 1].x , grid[i][j].y);
 		}
-		printf("\n");
 		pos_y += cell_y;
 	}
 
 	// Set the color to what was before
-	SDL_SetRenderDrawColor(s, 0x00, 0x00, 0x00, 0xFF);
+	//SDL_SetRenderDrawColor(s, 0x00, 0x00, 0x00, 0xFF);
+}
+
+void print_matrix(SDL_Renderer *s)
+{
+	int i = 0, j = 0;
+
+	for (i = 0; i < 8; i++)
+	{
+		for (j = 0; j < 7; j++)
+		{
+			SDL_RenderDrawLine(s, grid[i][j].x, grid[i][j].y, grid[i][j+1].x, grid[i][j].y);
+			SDL_SetRenderDrawColor(s, 0x00, 0x00, 0x00, 0xFF);
+		}
+	}
+
+	i = 0;
+	j = 0;
+	for (i = 0; i < 7; i++)
+	{
+		for (j = 0; j < 8; j++)
+		{
+			SDL_RenderDrawLine(s, grid[i][j].x, grid[i][j].y, grid[i][j].x, grid[i+1][j].y);
+			SDL_SetRenderDrawColor(s, 0x00, 0x00, 0x00, 0xFF);
+		}
+	}
+}
+
+void isometric_wea(void)
+{
+	int i = 0, j = 0;
+
+	for (i = 0; i < 8; i++)
+	{
+		for (j = 0; j < 8; j++)
+		{
+			grid[i][j].x = 0.7 * grid[i][j].x - 0.7 * grid[i][j].y;
+			grid[i][j].y = (1 - 0.7) * grid[i][j].x + (1 - 0.7) * grid[i][j].y - 1;
+		}
+	}
 }
 
 int main(int argc, char *args[])
@@ -105,14 +142,16 @@ int main(int argc, char *args[])
 			SDL_SetRenderDrawColor(s, 59, 44, 107, 255);
 			SDL_RenderClear(s);
 			// Set our color for the draw functions
-			SDL_SetRenderDrawColor(s, 0xFF, 0xFF, 0xFF, 0xFF);
+			SDL_SetRenderDrawColor(s, 0x00, 0x00, 0x00, 0xFF);
 			// Now we can draw our point
 			init_grid_vals(s);
+			//isometric_wea();
+			print_matrix(s);
 			// Set the color to what was before
 			// .. you could do some other drawing here
 			// And now we present everything we draw after the clear.
 			SDL_RenderPresent(s);
-			SDL_Delay(6000);
+			SDL_Delay(20000);
 		}
 	}
 
